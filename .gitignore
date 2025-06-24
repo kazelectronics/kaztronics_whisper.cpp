@@ -50,6 +50,7 @@ models/*.mlmodel
 models/*.mlmodelc
 models/*.mlpackage
 bindings/java/.gradle/
+bindings/java/bin/
 bindings/java/.idea/
 .idea/
 
