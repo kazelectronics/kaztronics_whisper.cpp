@@ -140,6 +140,35 @@ to highlight words with high or low confidence:
 <img width="965" alt="image" src="https://user-images.githubusercontent.com/1991296/197356445-311c8643-9397-4e5e-b46e-0b4b4daa2530.png">
 
 
+## new coreml whisper.cpp
 
-## Kaz
+```bash
+conda activate py311-whisper
+python3 ./models/convert-h5-to-coreml.py --model-name large-v1 --model-path steja/whisper-large-persian --encoder-only True
+mv models/coreml-encoder-large-v1.mlpackage /Volumes/Data/GitHub/trascriber/models/ggml-whisper-large-persian-encoder.mlpackage
+xcrun coremlcompiler compile /Volumes/Data/GitHub/trascriber/models/ggml-whisper-large-persian-encoder.mlpackage /Volumes/Data/GitHub/trascriber/models
+```
 
+## Run selecting a model
+
+```bash
+ffmpeg -i Victory_is_certain.mp4 -ar 16000 -ac 1 -c:a pcm_s16le -map 0:a Victory_is_certain.wav
+
+./build/bin/whisper-cli -m ../trascriber/models/ggml-whisper-large-persian.bin -l fa -f /Volumes/Data/Downloads/Victory_is_certain.wav -osrt -otxt
+```
+
+## Merge the mp4 with the srt
+
+- translate if required
+- use aegissub to set the style, save as ass file
+- merge with ffmpeg `ffmpeg -i "Victory_is_certain.mp4" -vf ass="Victory_is_certain.en.ass" -c:a copy "Victory_is_certain_en.mp4"`
+
+OR
+
+```bash
+ffmpeg -i Victory_is_certain.mp4 -vf "subtitles=1.fa.srt:force_style='Fontname=Amiri,Fontsize=14,PrimaryColour=&HFFFFFF&,BackColour=&H000000&,BorderStyle=3'" -c:v libx264 -c:a copy Victory_is_certain_en.mp4 -y
+```
+
+./build/bin/whisper-cli -m ../trascriber/models/ggml-medium.en.bin -l en -f /Volumes/Data/Downloads/test/test_json_asadj.wav -osrt -otxt -ojf -of /Volumes/Data/Downloads/test/test_json_asadj-mediumen_en
+./build/bin/whisper-cli -m ../trascriber/models/ggml-large-v3.bin -l en -f /Volumes/Data/Downloads/test/test_json_asadj.wav -osrt -otxt -ojf -of /Volumes/Data/Downloads/test/test_json_asadj-largev3_en
+./build/bin/whisper-cli -m ../trascriber/models/ggml-whisper-large-v2-arabic-5k-steps.bin -l ar -f /Volumes/Data/Downloads/test/test_json_asadj.wav -osrt -otxt -ojf -of /Volumes/Data/Downloads/test/test_json_asadj-largev2arabic_ar
